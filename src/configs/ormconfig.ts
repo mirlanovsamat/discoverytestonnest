@@ -3,11 +3,11 @@ import { DataSourceOptions } from "typeorm";
 
 const ormconfig: DataSourceOptions = {
     type: 'postgres',
-    host: 'localhost',
-    port: 5432,
-    username: 'postgres',
-    password: 'root',
-    database: 'metadata', 
+    host: process.env.PSQL_HOST,
+    port: parseInt(process.env.PSQL_PORT),
+    username: process.env.PSQL_USERNAME,
+    password: process.env.PSQL_PASSWORD,
+    database: process.env.PSQL_DATABASE, 
     entities: [UploadFileEntity],
     synchronize: true,
 }
