@@ -1,6 +1,8 @@
 import { LoggerService } from './../logger/logger.service';
 import { Injectable } from '@nestjs/common';
 import * as fs from 'fs'
+import { ensureDir } from 'fs-extra'
+import  * as path from 'app-root-path'
 
 @Injectable()
 export class AdapterService {
@@ -8,21 +10,23 @@ export class AdapterService {
         private readonly loggerService: LoggerService
     ){}
 
-    async writeFile(filename, buffer){
+    async writeFile(body, buffer){
         return new Promise((resolve, reject) => {
+            const uploadFolder = `${path}/${process.env.UPLOAD_FOLDER}/${body.user.username}`;
+            ensureDir(uploadFolder)
             this.loggerService.startSaving() 
-            const writeStream = fs.createWriteStream(`${process.env.UPLOAD_FOLDER}/${filename}`)
+            const writeStream = fs.createWriteStream(`${uploadFolder}/${body.filename}`)
             writeStream.write(buffer)
-            writeStream.on("error", err => reject(err));
-            writeStream.on("end", () => console.log('end'));
+            writeStream.on('close', () => {resolve(body.filename)});
             this.loggerService.endSaving()
-            this.loggerService.checkFolderSize(process.env.UPLOAD_FOLDER)
-            resolve(filename)
-        }).then(data => {console.log(data)});
+            writeStream.on("error", err => reject(err));
+            writeStream.end()
+            this.loggerService.checkFolderSize(uploadFolder, body.user.id)
+        })  
     }
 
-    readFile(filename){
-        const readStream = fs.createReadStream(`${process.env.UPLOAD_FOLDER}/${filename}`);
+    readFile(filename, username){
+        const readStream = fs.createReadStream(`${process.env.UPLOAD_FOLDER}/${username}/${filename}`);
         readStream.on("error", err => console.log(err));
         readStream.on("end", () => console.log('end'));
         return readStream

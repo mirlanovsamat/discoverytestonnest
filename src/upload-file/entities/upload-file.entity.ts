@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { UserEntity } from './../../user/entities/user.entity';
+import { Column, Entity, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 
 @Entity()
 export class UploadFileEntity {
@@ -13,4 +14,7 @@ export class UploadFileEntity {
 
     @Column()
     size: number
+
+    @ManyToOne(() => UserEntity, user => user.files)
+    user: UserEntity;
 }
