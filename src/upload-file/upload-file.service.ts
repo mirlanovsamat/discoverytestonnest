@@ -15,9 +15,8 @@ export class UploadFileService {
   ){}
 
   async readFile(filename, decode){
-    const file = await this.uploadFileRepository.findOne({where: {name: filename, user: decode.id}})
     const readStream = await this.adapterService.readFile(filename, decode.username) 
-    return {file, readStream}
+    return readStream
   }
   
   async updateFile(body){
