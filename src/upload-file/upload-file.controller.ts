@@ -12,16 +12,16 @@ export class UploadFileController {
   @Get(':filename')
     async readFile(@Param('filename') filename, @Res() response: Response, @Req() request: Request) {
     const {file, readStream} = await this.uploadFileService.readFile(filename, request.body.decode)
-    response.writeHead(200, {
-      "Content-Type" : file.mimetype,
-      "Content-Length": file.size
-    });
+    // response.writeHead(200, {
+    //   "Content-Type" : file.mimetype,
+    //   "Content-Length": file.size
+    // });
     readStream.pipe(response)
     }
 
   @Put(':filename')
     updateFile(@Req() request: Request) {
-      return this.uploadFileService.updateFile(request.body)
+      return this.uploadFileService.updateFile(request.body)  
     }
 
 }  

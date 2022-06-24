@@ -12,13 +12,11 @@ export class UploadFileService {
     @InjectRepository(UploadFileEntity)
     private readonly uploadFileRepository: Repository<UploadFileEntity>,
     private readonly adapterService: AdapterService,
-    private readonly userService: UserService
   ){}
 
   async readFile(filename, decode){
-    const user = await this.userService.findById(decode.id)
     const file = await this.uploadFileRepository.findOne({where: {name: filename, user: decode.id}})
-    const readStream = await this.adapterService.readFile(filename, user.username) 
+    const readStream = await this.adapterService.readFile(filename, decode.username) 
     return {file, readStream}
   }
   

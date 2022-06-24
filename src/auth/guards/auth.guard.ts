@@ -15,4 +15,4 @@ export class AuthGuard implements CanActivate {
         req.body.decode = decode
         return true
     }
-}
+} 

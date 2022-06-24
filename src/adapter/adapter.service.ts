@@ -22,7 +22,7 @@ export class AdapterService {
             writeStream.on("error", err => reject(err));
             writeStream.end()  
             this.loggerService.checkFolderSize(uploadFolder, body.decode.id)
-        })  
+        })
     }
 
     readFile(filename, username){
