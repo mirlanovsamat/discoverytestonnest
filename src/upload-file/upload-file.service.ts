@@ -1,11 +1,10 @@
-import { LoggerService } from './../logger/logger.service';
+import { UserService } from 'src/user/user.service';
 import { AdapterService } from './../adapter/adapter.service';
 import { UploadFileEntity } from './entities/upload-file.entity';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Delete } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm/repository/Repository';
-import { ensureDir } from 'fs-extra'
-
+import { builtinModules } from 'module';
 
 @Injectable()
 export class UploadFileService {
@@ -13,11 +12,12 @@ export class UploadFileService {
     @InjectRepository(UploadFileEntity)
     private readonly uploadFileRepository: Repository<UploadFileEntity>,
     private readonly adapterService: AdapterService,
-    private readonly loggerservice: LoggerService
+    private readonly userService: UserService
   ){}
 
-  async readFile(filename, user){
-    const file = await this.uploadFileRepository.findOne({where: {name: filename, user: user.id}})
+  async readFile(filename, decode){
+    const user = await this.userService.findById(decode.id)
+    const file = await this.uploadFileRepository.findOne({where: {name: filename, user: decode.id}})
     const readStream = await this.adapterService.readFile(filename, user.username) 
     return {file, readStream}
   }
@@ -27,12 +27,12 @@ export class UploadFileService {
       name: body.filename,
       mimetype: body.mimetype,
       size: body.size,
-      user: body.user.id
+      user: body.decode.id
     }
-    const updatedFile = await this.uploadFileRepository.update({name: body.filename, user: body.user.id}, fileDto)
+    const updatedFile = await this.uploadFileRepository.update({name: body.filename, user: body.decode.id}, fileDto)
     if(updatedFile.affected === 0){
       await this.uploadFileRepository.save(fileDto)
     }
-    await this.adapterService.writeFile(body, body.buffer)
+    await this.adapterService.writeFile(body)
   }
 }

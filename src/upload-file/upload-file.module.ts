@@ -11,7 +11,7 @@ import { AdapterModule } from './../adapter/adapter.module';
   imports: [
     TypeOrmModule.forFeature([UploadFileEntity]),
     AdapterModule,
-    LoggerModule
+    UserModule
   ],
   controllers: [UploadFileController],
   providers: [UploadFileService]

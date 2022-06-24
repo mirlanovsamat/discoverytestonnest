@@ -10,18 +10,18 @@ export class AdapterService {
         private readonly loggerService: LoggerService
     ){}
 
-    async writeFile(body, buffer){
+    async writeFile(body){
         return new Promise((resolve, reject) => {
-            const uploadFolder = `${path}/${process.env.UPLOAD_FOLDER}/${body.user.username}`;
+            const uploadFolder = `${path}/${process.env.UPLOAD_FOLDER}/${body.decode.username}`;
             ensureDir(uploadFolder)
             this.loggerService.startSaving() 
             const writeStream = fs.createWriteStream(`${uploadFolder}/${body.filename}`)
-            writeStream.write(buffer)
+            writeStream.write(body.buffer)
             writeStream.on('close', () => {resolve(body.filename)});
             this.loggerService.endSaving()
             writeStream.on("error", err => reject(err));
-            writeStream.end()
-            this.loggerService.checkFolderSize(uploadFolder, body.user.id)
+            writeStream.end()  
+            this.loggerService.checkFolderSize(uploadFolder, body.decode.id)
         })  
     }
 

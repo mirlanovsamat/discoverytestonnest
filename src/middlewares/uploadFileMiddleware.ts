@@ -9,8 +9,10 @@ export class UploadFileMiddleware implements NestMiddleware {
     req.on('data', (chunk) => {
         buffer = Buffer.concat([buffer, chunk])
     })
+    let decode
     req.on('end', () => {
         req.body = {
+            decode,
             buffer,
             filename,
             mimetype: req.header('content-type'),

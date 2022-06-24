@@ -7,7 +7,7 @@ import { AdapterModule } from './adapter/adapter.module';
 import { UploadFileMiddleware } from './middlewares/uploadFileMiddleware';
 import { LoggerModule } from './logger/logger.module';
 import { UserModule } from './user/user.module';
-import { AuthMiddleware } from './middlewares/authMiddleware';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -16,7 +16,8 @@ import { AuthMiddleware } from './middlewares/authMiddleware';
     UploadFileModule,
     AdapterModule,
     LoggerModule,
-    UserModule
+    UserModule,
+    AuthModule
   ],
   controllers: [],
   providers: [],
@@ -26,8 +27,5 @@ export class AppModule implements NestModule {
     consumer
       .apply(UploadFileMiddleware)
       .forRoutes({ path: 'files/:filename', method: RequestMethod.PUT });
-    consumer
-      .apply(AuthMiddleware)
-      .forRoutes({ path: '/**', method: RequestMethod.ALL });
   }
 }
