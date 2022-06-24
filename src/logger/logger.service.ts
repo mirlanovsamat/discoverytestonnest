@@ -22,7 +22,7 @@ export class LoggerService {
         const user = await this.userService.findById(id)
         return user.memory
     }
-
+    
     async checkFolderSize(folder, id){
         const userMemory = await this.userMemory(id)
         const size = await this.dirSize(folder);

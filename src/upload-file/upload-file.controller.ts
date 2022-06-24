@@ -24,4 +24,4 @@ export class UploadFileController {
       return this.uploadFileService.updateFile(request.body)
     }
 
-}
+}  

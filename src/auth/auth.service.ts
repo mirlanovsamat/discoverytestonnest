@@ -4,8 +4,8 @@ import { CreateUserDto } from 'src/user/dto/create-user.dto';
 import { LoginUserDto } from 'src/user/dto/login-user.dto';
 import { UserEntity } from 'src/user/entities/user.entity';
 import { Repository } from 'typeorm/repository/Repository';
-import { compare } from 'bcrypt'
-import { sign } from 'jsonwebtoken'
+import { compare } from 'bcrypt';
+import { sign } from 'jsonwebtoken';
 
 @Injectable()
 export class AuthService {
@@ -31,13 +31,13 @@ export class AuthService {
     const user = await this.userRepository.findOne({where: { email: loginUserDto.email}})
 
     if(!user) {
-        throw new HttpException('Такого пользователя не существует', HttpStatus.UNPROCESSABLE_ENTITY);
+      throw new HttpException('Такого пользователя не существует', HttpStatus.UNPROCESSABLE_ENTITY);
     }
 
     const isPasswordCorrect = await compare(loginUserDto.password, user.password);
 
     if(!isPasswordCorrect) {
-        throw new HttpException('Неверный пароль', HttpStatus.UNPROCESSABLE_ENTITY);
+      throw new HttpException('Неверный пароль', HttpStatus.UNPROCESSABLE_ENTITY);
     }
     const token = this.generateJwt(user)
     delete user.password
